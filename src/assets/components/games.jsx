@@ -1,72 +1,105 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
-const choices = ["pierre", "papier", "ciseaux"]; 
+// Remplace ces imports par tes vrais icônes SVG ou PNG
+import IconPierre from "./icons/pierre.svg";
+import IconPapier from "./icons/papier.svg";
+import IconCiseaux from "./icons/ciseaux.svg";
 
-// Returns a random choice for the bot
-const getRandomChoice = () => {
-    const randomIndex = Math.floor(Math.random() * choices.length);
-    return choices[randomIndex];
+const choices = ["pierre", "papier", "ciseaux"];
+
+const icons = {
+  pierre: <img src={IconPierre} alt="Pierre" />,
+  papier: <img src={IconPapier} alt="Papier" />,
+  ciseaux: <img src={IconCiseaux} alt="Ciseaux" />,
 };
 
-// Determines the result of the game
 const getResult = (player, bot) => {
-    if (player === bot) return "Egalité";
-    if (
-        (player === "pierre" && bot === "ciseaux") ||
-        (player === "papier" && bot === "pierre") ||
-        (player === "ciseaux" && bot === "papier")
-    ) {
-        return "Gagné";
-    }
-    return "perdu";
+  if (player === bot) return "Égalité";
+  if (
+    (player === "papier" && bot === "pierre") ||
+    (player === "pierre" && bot === "ciseaux") ||
+    (player === "ciseaux" && bot === "papier")
+  ) {
+    return "Gagné";
+  }
+  return "Perdu";
 };
 
-const Game = () => {
-    const [playerC, setPlayerC] = useState("");
-    const [botC, setBotC] = useState("");
-    const [result, setResult] = useState("");
-    const [score, setScore] = useState(0);
+export default function Game() {
+  const [score, setScore] = useState(0);
+  const [playerChoice, setPlayerChoice] = useState(null);
+  const [botChoice, setBotChoice] = useState(null);
+  const [result, setResult] = useState(null);
 
-    const handleChoice = (choice) => {
-        const bot = getRandomChoice();
-        const outcome = getResult(choice, bot);
+  const handleChoice = (choice) => {
+    const botPick = choices[Math.floor(Math.random() * choices.length)];
+    const res = getResult(choice, botPick);
 
-        setPlayerC(choice);
-        setBotC(bot);
-        setResult(outcome);
+    setPlayerChoice(choice);
+    setBotChoice(botPick);
+    setResult(res);
 
-        if (outcome === "Gagné") {
-            setScore((prevScore) => prevScore + 1);
-        } else if (outcome === "perdu") {
-            setScore((prevScore) => prevScore - 1);
-        }
-    };
+    if (res === "Gagné") setScore((s) => s + 1);
+    else if (res === "Perdu") setScore((s) => s - 1);
+  };
 
-    return (
-        <div>
-            <h1>Pierre / Papier / Ciseaux</h1>
-            <p>score : <strong>{score}</strong></p>
+  const resetGame = () => {
+    setPlayerChoice(null);
+    setBotChoice(null);
+    setResult(null);
+  };
 
-            <div>
-                {choices.map((choice) => (
-                    <button
-                        key={choice}
-                        onClick={() => handleChoice(choice)}
-                    >
-                        {choice}
-                    </button>
-                ))}
-            </div>
-
-            {result && (
-                <div>
-                    <p>Tu as choisi : <strong>{playerC}</strong></p>
-                    <p>L'ordi a choisi : <strong>{botC}</strong></p>
-                    <p>Résultat : <strong>{result}</strong></p>
-                </div>
-            )}
+  return (
+    <div className="game-container">
+      <header className="header">
+        <div className="game-title">ROCK PAPER SCISSORS</div>
+        <div className="score-box">
+          <div className="score-label">SCORE</div>
+          <div className="score-number">{score}</div>
         </div>
-    );
-};
+      </header>
 
-export default Game;
+      {!result ? (
+        <div className="choices">
+          {choices.map((choice) => (
+            <button
+              key={choice}
+              className={`choice-button ${choice}`}
+              onClick={() => handleChoice(choice)}
+              aria-label={choice}
+            >
+              {icons[choice]}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="result-screen">
+          <div className="choice-picked">
+            <div className={`choice-button large ${playerChoice}`}>
+              {icons[playerChoice]}
+            </div>
+            <p>YOU PICKED</p>
+          </div>
+
+          <div className="result-text">
+            <h2>
+              {result === "Gagné"
+                ? "YOU WIN"
+                : result === "Perdu"
+                ? "YOU LOSE"
+                : "TIE"}
+            </h2>
+            <button onClick={resetGame}>PLAY AGAIN</button>
+          </div>
+
+          <div className="choice-picked">
+            <div className={`choice-button large ${botChoice}`}>
+              {icons[botChoice]}
+            </div>
+            <p>THE HOUSE PICKED</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
