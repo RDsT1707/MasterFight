@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import './JeuTriangle.css';
+import './Games.css';
 
-import IcônePierre from "./images/bg-rock.svg";
-import IcônePapier from "./images/bg-paper.svg";
-import IcôneCiseaux from "./images/bg-scissors.svg";
+import IcônePierre from "../../images/icon-rock.svg";
+import IcônePapier from "../../images/icon-paper.svg";
+import IcôneCiseaux from "../../images/icon-scissors.svg";
 
 const choix = ["pierre", "papier", "ciseaux"];
 
@@ -25,7 +25,7 @@ const calculerRésultat = (joueur, ordinateur) => {
   return "Perdu";
 };
 
-export default function JeuTriangle() {
+export default function Games() {
   const [score, setScore] = useState(0);
   const [choixJoueur, setChoixJoueur] = useState(null);
   const [choixOrdi, setChoixOrdi] = useState(null);
@@ -52,7 +52,7 @@ export default function JeuTriangle() {
   return (
     <div className="conteneur-jeu-triangle">
       <header className="entete">
-        <div className="titre-jeu">PIERRE PAPIER CISEAUX</div>
+        <div className="titre-jeu">ROCK<br />PAPER<br />SCISSORS</div>
         <div className="boite-score">
           <div className="etiquette-score">SCORE</div>
           <div className="nombre-score">{score}</div>
@@ -61,14 +61,12 @@ export default function JeuTriangle() {
 
       {!résultat ? (
         <div className="zone-jeu">
-          <div className="triangle-fond"></div>
-          <button
-            className="bouton-choix pierre"
-            onClick={() => jouer("pierre")}
-            aria-label="pierre"
-          >
-            {icônes.pierre}
-          </button>
+          {/* lignes du triangle */}
+          <div className="ligne ligne-haut"></div>
+          <div className="ligne ligne-gauche"></div>
+          <div className="ligne ligne-droite"></div>
+
+          {/* boutons choix */}
           <button
             className="bouton-choix papier"
             onClick={() => jouer("papier")}
@@ -83,9 +81,16 @@ export default function JeuTriangle() {
           >
             {icônes.ciseaux}
           </button>
+          <button
+            className="bouton-choix pierre"
+            onClick={() => jouer("pierre")}
+            aria-label="pierre"
+          >
+            {icônes.pierre}
+          </button>
         </div>
       ) : (
-        <div className="ecran-résultat">
+        <div className="ecran-resultat">
           <div className="choix-joueur">
             <div className={`bouton-choix grand ${choixJoueur}`}>
               {icônes[choixJoueur]}
@@ -93,7 +98,7 @@ export default function JeuTriangle() {
             <p>TU AS CHOISI</p>
           </div>
 
-          <div className="texte-résultat">
+          <div className="texte-resultat">
             <h2>
               {résultat === "Gagné"
                 ? "TU AS GAGNÉ"
