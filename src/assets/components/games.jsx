@@ -27,5 +27,15 @@ const game = () => {
         const outcome = getResult(choice, bot);
 
 
+        setPlayerC(choice);
+        setBotC(bot);
+        setresult(outcome);
+
+        if (outcome === "Gagné") {
+            setScore(score + 1);
+        } else if (outcome === "perdu") {
+            setScore(score - 1);
+        }
+    }
 
 };
