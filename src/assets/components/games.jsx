@@ -22,5 +22,10 @@ const game = () => {
     const [score, setScore ] = useState(0);
 
 
+    const handleChoice = (choice) => {
+        const bot = getRandomChoice();
+        const outcome = getResult(choice, bot);
+
+
 
 };
