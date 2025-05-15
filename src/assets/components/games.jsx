@@ -9,7 +9,12 @@ const getRandomChoice = () => {
      (player === "papier" && === "pierrre") ||
      (player === "ciseaux" && === "papier") 
 
-    )
+    ) {
+        return "Gagné"; 
+    }
+    return "perdu";
+};
+
 
 
 };
