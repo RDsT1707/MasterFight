@@ -18,6 +18,9 @@ const getRandomChoice = () => {
 const game = () => {
     const [playerC, setPlayerC] = useState("");
     const [botC, setBotC] = useState("");
-    
+    const [result, setresult ] = useState("");
+    const [score, setScore ] = useState(0);
+
+
 
 };
