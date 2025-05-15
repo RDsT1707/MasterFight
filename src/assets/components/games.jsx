@@ -15,6 +15,9 @@ const getRandomChoice = () => {
     return "perdu";
 };
 
-
+const game = () => {
+    const [playerC, setPlayerC] = useState("");
+    const [botC, setBotC] = useState("");
+    
 
 };
