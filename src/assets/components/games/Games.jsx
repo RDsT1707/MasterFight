@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './Games.css'
+import './JeuTriangle.css';
 
 import IcônePierre from "./images/bg-rock.svg";
 import IcônePapier from "./images/bg-paper.svg";
@@ -25,7 +25,7 @@ const calculerRésultat = (joueur, ordinateur) => {
   return "Perdu";
 };
 
-export default function Jeu() {
+export default function JeuTriangle() {
   const [score, setScore] = useState(0);
   const [choixJoueur, setChoixJoueur] = useState(null);
   const [choixOrdi, setChoixOrdi] = useState(null);
@@ -50,7 +50,7 @@ export default function Jeu() {
   };
 
   return (
-    <div className="conteneur-jeu">
+    <div className="conteneur-jeu-triangle">
       <header className="entete">
         <div className="titre-jeu">PIERRE PAPIER CISEAUX</div>
         <div className="boite-score">
@@ -60,17 +60,29 @@ export default function Jeu() {
       </header>
 
       {!résultat ? (
-        <div className="zone-choix">
-          {choix.map((c) => (
-            <button
-              key={c}
-              className={`bouton-choix ${c}`}
-              onClick={() => jouer(c)}
-              aria-label={c}
-            >
-              {icônes[c]}
-            </button>
-          ))}
+        <div className="zone-jeu">
+          <div className="triangle-fond"></div>
+          <button
+            className="bouton-choix pierre"
+            onClick={() => jouer("pierre")}
+            aria-label="pierre"
+          >
+            {icônes.pierre}
+          </button>
+          <button
+            className="bouton-choix papier"
+            onClick={() => jouer("papier")}
+            aria-label="papier"
+          >
+            {icônes.papier}
+          </button>
+          <button
+            className="bouton-choix ciseaux"
+            onClick={() => jouer("ciseaux")}
+            aria-label="ciseaux"
+          >
+            {icônes.ciseaux}
+          </button>
         </div>
       ) : (
         <div className="ecran-résultat">
