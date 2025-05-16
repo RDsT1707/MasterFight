@@ -94,15 +94,6 @@ body {
   background-color: white;
 }
 
-.choice-btn:hover {
-  transform: scale(1.05);
-}
-
-.choice-btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15) inset;
-}
-
 .choice-btn.pierre {
   bottom: 0;
   left: 50%;
