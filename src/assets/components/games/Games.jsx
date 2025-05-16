@@ -1,119 +1,159 @@
 import React, { useState } from "react";
 import './Games.css';
 
+import Rules from "../../images/image-rules.svg";
 import IcônePierre from "../../images/icon-rock.svg";
 import IcônePapier from "../../images/icon-paper.svg";
 import IcôneCiseaux from "../../images/icon-scissors.svg";
+import Logo from "../../images/logo.svg";
 
-const choix = ["pierre", "papier", "ciseaux"];
-
-const icônes = {
-  pierre: <img src={IcônePierre} alt="Pierre" />,
-  papier: <img src={IcônePapier} alt="Papier" />,
-  ciseaux: <img src={IcôneCiseaux} alt="Ciseaux" />,
+const ICONS = {
+  pierre: <img src={IcônePierre} alt="Pierre" className="icon-image" />,
+  papier: <img src={IcônePapier} alt="Papier" className="icon-image" />,
+  ciseaux: <img src={IcôneCiseaux} alt="Ciseaux" className="icon-image" />
 };
 
+const CHOIX = ["pierre", "papier", "ciseaux"];
+
 const calculerRésultat = (joueur, ordinateur) => {
-  if (joueur === ordinateur) return "Égalité";
+  if (joueur === ordinateur) return "ÉGALITÉ";
   if (
     (joueur === "papier" && ordinateur === "pierre") ||
     (joueur === "pierre" && ordinateur === "ciseaux") ||
     (joueur === "ciseaux" && ordinateur === "papier")
   ) {
-    return "Gagné";
+    return "GAGNÉ";
   }
-  return "Perdu";
+  return "PERDU";
 };
 
 export default function Games() {
   const [score, setScore] = useState(0);
+  const [étapeJeu, setÉtapeJeu] = useState("sélection"); // sélection, attente, résultat
   const [choixJoueur, setChoixJoueur] = useState(null);
-  const [choixOrdi, setChoixOrdi] = useState(null);
-  const [résultat, setRésultat] = useState(null);
+  const [choixMaison, setChoixMaison] = useState(null);
+  const [résultatJeu, setRésultatJeu] = useState(null);
+  const [afficherRègles, setAfficherRègles] = useState(false);
 
-  const jouer = (choixFait) => {
-    const ordi = choix[Math.floor(Math.random() * choix.length)];
-    const résultatPartie = calculerRésultat(choixFait, ordi);
-
-    setChoixJoueur(choixFait);
-    setChoixOrdi(ordi);
-    setRésultat(résultatPartie);
-
-    if (résultatPartie === "Gagné") setScore((s) => s + 1);
-    else if (résultatPartie === "Perdu") setScore((s) => s - 1);
+  const gérerClicChoix = (choix) => {
+    setChoixJoueur(choix);
+    setÉtapeJeu("attente");
+    
+    // Simuler le choix de la maison
+    setTimeout(() => {
+      const choixAléatoire = CHOIX[Math.floor(Math.random() * CHOIX.length)];
+      setChoixMaison(choixAléatoire);
+      setÉtapeJeu("résultat");
+      
+      const résultat = calculerRésultat(choix, choixAléatoire);
+      setRésultatJeu(résultat);
+      
+      // Mettre à jour le score
+      if (résultat === "GAGNÉ") {
+        setScore(prevScore => prevScore + 1);
+      } else if (résultat === "PERDU") {
+        setScore(prevScore => Math.max(0, prevScore - 1));
+      }
+    }, 1500);
   };
 
-  const recommencer = () => {
+  const rejouer = () => {
+    setÉtapeJeu("sélection");
     setChoixJoueur(null);
-    setChoixOrdi(null);
-    setRésultat(null);
+    setChoixMaison(null);
+    setRésultatJeu(null);
   };
 
   return (
-    <div className="conteneur-jeu-triangle">
-      <header className="entete">
-        <div className="titre-jeu">ROCK<br />PAPER<br />SCISSORS</div>
-        <div className="boite-score">
-          <div className="etiquette-score">SCORE</div>
-          <div className="nombre-score">{score}</div>
+    <div className="game-container">
+      {/* En-tête avec logo et score */}
+      <header className="game-header">
+        <div className="game-title">
+          <h1>PIERRE<br />PAPIER<br />CISEAUX</h1>
+        </div>
+        <div className="score-box">
+          <span className="score-label">SCORE</span>
+          <div className="score-value">{score}</div>
         </div>
       </header>
 
-      {!résultat ? (
-        <div className="zone-jeu">
-          {/* lignes du triangle */}
-          <div className="ligne ligne-haut"></div>
-          <div className="ligne ligne-gauche"></div>
-          <div className="ligne ligne-droite"></div>
-
-          {/* boutons choix */}
-          <button
-            className="bouton-choix papier"
-            onClick={() => jouer("papier")}
-            aria-label="papier"
-          >
-            {icônes.papier}
-          </button>
-          <button
-            className="bouton-choix ciseaux"
-            onClick={() => jouer("ciseaux")}
-            aria-label="ciseaux"
-          >
-            {icônes.ciseaux}
-          </button>
-          <button
-            className="bouton-choix pierre"
-            onClick={() => jouer("pierre")}
-            aria-label="pierre"
-          >
-            {icônes.pierre}
-          </button>
+      {/* Corps du jeu */}
+      {étapeJeu === "sélection" && (
+        <div className="selection-screen">
+          {/* Triangle de sélection */}
+          <div className="choice-btn pierre" onClick={() => gérerClicChoix("pierre")}>
+            {ICONS.pierre}
+          </div>
+          <div className="choice-btn papier" onClick={() => gérerClicChoix("papier")}>
+            {ICONS.papier}
+          </div>
+          <div className="choice-btn ciseaux" onClick={() => gérerClicChoix("ciseaux")}>
+            {ICONS.ciseaux}
+          </div>
         </div>
-      ) : (
-        <div className="ecran-resultat">
-          <div className="choix-joueur">
-            <div className={`bouton-choix grand ${choixJoueur}`}>
-              {icônes[choixJoueur]}
-            </div>
-            <p>TU AS CHOISI</p>
-          </div>
+      )}
 
-          <div className="texte-resultat">
-            <h2>
-              {résultat === "Gagné"
-                ? "TU AS GAGNÉ"
-                : résultat === "Perdu"
-                ? "TU AS PERDU"
-                : "ÉGALITÉ"}
+      {étapeJeu === "attente" && (
+        <div className="duel-screen">
+          <div className="duel-side">
+            <h2 className="duel-title">VOUS AVEZ CHOISI</h2>
+            <div className={`duel-choice ${choixJoueur}`}>
+              {ICONS[choixJoueur]}
+            </div>
+          </div>
+          
+          <div className="duel-side">
+            <h2 className="duel-title">LA MAISON A CHOISI</h2>
+            <div className="house-choice-placeholder">
+              <div className="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {étapeJeu === "résultat" && (
+        <div className="duel-screen">
+          <div className="duel-side">
+            <h2 className="duel-title">VOUS AVEZ CHOISI</h2>
+            <div className={`duel-choice ${choixJoueur} ${résultatJeu === "GAGNÉ" ? "winner" : ""}`}>
+              {ICONS[choixJoueur]}
+            </div>
+          </div>
+          
+          <div className="result-box">
+            <h2 className="result-text">
+              {résultatJeu === "GAGNÉ" ? "VOUS AVEZ GAGNÉ" : résultatJeu === "PERDU" ? "VOUS AVEZ PERDU" : "ÉGALITÉ"}
             </h2>
-            <button onClick={recommencer}>REJOUER</button>
+            <button className="play-again-btn" onClick={rejouer}>
+              REJOUER
+            </button>
           </div>
-
-          <div className="choix-ordi">
-            <div className={`bouton-choix grand ${choixOrdi}`}>
-              {icônes[choixOrdi]}
+          
+          <div className="duel-side">
+            <h2 className="duel-title">L'ORDINATEUR A CHOISI</h2>
+            <div className={`duel-choice ${choixMaison} ${résultatJeu === "PERDU" ? "winner" : ""}`}>
+              {ICONS[choixMaison]}
             </div>
-            <p>L’ORDI A CHOISI</p>
+          </div>
+        </div>
+      )}
+
+      {/* Bouton règles */}
+      <button className="rules-btn" onClick={() => setAfficherRègles(!afficherRègles)}>
+        RÈGLES
+      </button>
+
+      {/* Modal des règles */}
+      {afficherRègles && (
+        <div className="rules-modal">
+          <div className="rules-content">
+            <h2>RÈGLES</h2>
+            <div className="rules-image">
+              <img src={Rules} alt="regles" className="rules-image" />
+            </div>
+            <button className="close-modal" onClick={() => setAfficherRègles(false)}>
+              X
+            </button>
           </div>
         </div>
       )}
